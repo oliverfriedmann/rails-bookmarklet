@@ -1,12 +1,12 @@
 rails-bookmarklet
 =================
 
-A bookmarklet gem for rails
+A bookmarklet gem for rails.
 
 
 ## Installation
 
-1.  Add this to your Gemfile: ```gem 'rails-bookmarklet'```
+1.  Add this to your Gemfile: ```gem "rails-bookmarklet", :git => "https://github.com/oliverfriedmann/rails-bookmarklet.git"```
 
 2.  Run ```bundle install```
 
@@ -17,19 +17,19 @@ The bookmarklet will be launched by a special bookmark in the user's browser.
 The bookmark's link is javascript code that loads a remote script into the context of the current page.
 The javascript code for the bookmark is generated as follows:
 
-    ```ruby
+  ```ruby
     RailsBookmarklet::compile_invocation_script(
       url,
       options
     )
-    ```
+  ```
 
 The url has to be given as absolute path to your action handling the transmission of the remote script that should be loaded when the user clicks on the bookmarklet.
 If you want to be able to identify your user by a token, url could be given as follows:
 
-    ```ruby
-    mybookmarklet_url(:only_path => false, :token => current_user.overlay_token)
-    ```
+  ```ruby
+    mybookmarklet_url(:only_path => false, :token => current_user.token)
+  ```
     
 The optional options hash allows two parameters:
 
@@ -38,10 +38,10 @@ The optional options hash allows two parameters:
 
 The bookmarklet script provides two variables, ```d = document``` and ```b = d.body```, that can be used in the params hash, e.g. you could add the following parameters to transmit the browser's date and the document's title to your server:
 
-    ```ruby
+  ```ruby
     :params => {"time" => "'+(new Date().getTime())+'",
                 "title" => "'+encodeURIComponent(d.title)+'"}
-    ```
+  ```
 
 
 ## Bookmarklet Controller
@@ -49,7 +49,7 @@ The bookmarklet script provides two variables, ```d = document``` and ```b = d.b
 In the controller that handles the ```mybookmarklet``` action, you need to ```include RailsBookmarklet```.
 In the action, you could (as an example) log the browser's request to your database and then render the remote script for the bookmarklet:
 
-    ```ruby
+  ```ruby
     def show
       @uri = request.env["HTTP_REFERER"]
       @title = params[:title]
@@ -63,7 +63,7 @@ In the action, you could (as an example) log the browser's request to your datab
                         :time => @time)      
       render_bookmarklet("mybookmarklet", "show")
     end
-    ```
+  ```
     
 The ```render_bookmarklet(namespace, view, options = {})``` function takes the following arguments:
 - ```namespace```: a string that namespaces an invisible html container that is automatically created in the browser's context,
@@ -75,7 +75,7 @@ The ```render_bookmarklet(namespace, view, options = {})``` function takes the f
 
 An example view could look as follows:
 
-    ```html
+  ```html
   	<style id="bookmarklet_style">
 		.mybookmarklet_htmlbase {
 		  position: fixed;
@@ -131,7 +131,7 @@ An example view could look as follows:
 			
 			mybookmarklet_content_load();
 		</script>
-    ```
+  ```
     
 When this view is loaded into the context of the user's browser, the two divs are added to visible area of the user's browser.
 You can then load more scripts etc. by AJAX calls as you would normally do.
