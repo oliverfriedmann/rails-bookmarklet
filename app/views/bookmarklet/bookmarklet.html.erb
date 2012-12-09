@@ -1,0 +1,31 @@
+function <%= namespace %>_content(container) {
+	<% tags.each do |tag| %>
+		var elem = document.createElement('<%= tag[:name] %>');
+		<% tag[:attributes].each do |key,value| %>
+			elem.setAttribute("<%= key %>", "<%= value %>");
+		<% end %>
+		elem.innerHTML = '<%= j raw(tag[:innerHTML]) %>';
+		container.appendChild(elem);
+	<% end %>
+}
+
+function <%= namespace %>_is_loaded() {
+	return document.getElementById("<%= namespace %>_container") != null;
+}
+
+function <%= namespace %>_load() {
+	if (!<%= namespace %>_is_loaded()) {
+		var container = document.createElement("div");
+		container.setAttribute('id', '<%= namespace %>_container');
+		container.style.display = 'none';
+		<%= namespace %>_content(container);
+		document.body.appendChild(container);
+	}
+}
+
+function <%= namespace %>_unload() {
+	if (<%= namespace %>_is_loaded())
+		document.body.removeChild(document.getElementById("<%= namespace %>_container"));
+}
+
+<%= namespace %>_load();
