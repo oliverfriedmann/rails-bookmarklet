@@ -46,5 +46,13 @@ module RailsBookmarklet
     def self.important_stylesheet(path)
       return Rails.application.class.assets.find_asset(path).body.gsub(";", " !important;")
     end
+    
+    def bookmarklet_stylesheet_link_tag(source, options = {})
+      old = ActionController::Base.asset_host
+      ActionController::Base.asset_host = request.host_with_port
+      s = stylesheet_link_tag(source, options)
+      ActionController::Base.asset_host = old
+      return s
+    end
 
 end
