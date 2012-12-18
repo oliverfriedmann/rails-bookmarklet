@@ -151,7 +151,7 @@ A convenience routine that automatically adds !important to each style property 
 
 Instead of adding the stylesheet directly to your view, you can add it as link:
 
-  ```html
+  ```ruby
     <%= bookmarklet_stylesheet_link_tag "mybookmarklet" %>
   ```
   
