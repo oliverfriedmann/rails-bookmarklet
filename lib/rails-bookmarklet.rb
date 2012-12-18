@@ -54,5 +54,17 @@ module RailsBookmarklet
       ActionController::Base.asset_host = old
       return s
     end
+    
+    def bookmarklet_asset_url(source)
+      return root_url(:only_path => false) + "assets/" + source
+    end
+
+    def bookmarklet_javascript_include_tag(source, options = {})
+      old = ActionController::Base.asset_host
+      ActionController::Base.asset_host = request.host_with_port
+      s = javascript_include_tag(source, options)
+      ActionController::Base.asset_host = old
+      return s
+    end
 
 end
