@@ -46,7 +46,7 @@ The bookmarklet script provides two variables, ```d = document``` and ```b = d.b
 
 ## Bookmarklet Controller
 
-In the controller that handles the ```mybookmarklet``` action, you need to ```include RailsBookmarklet```.
+In the controller that handles the ```mybookmarklet``` action, you need to include the controller's helper, and in the helper add ```include RailsBookmarklet```.
 In the action, you could (as an example) log the browser's request to your database and then render the remote script for the bookmarklet:
 
   ```ruby
@@ -135,3 +135,46 @@ An example view could look as follows:
     
 When this view is loaded into the context of the user's browser, the two divs are added to visible area of the user's browser.
 You can then load more scripts etc. by AJAX calls as you would normally do.
+
+
+## Stylesheets
+
+There are two issues with stylesheets that you use in your bookmarklet:
+
+- namespacing: you need to make sure that your style classes do not collide with already existing style classes of the host site and
+- resetting: you need to make sure that all styles imposed by the host site are reset for your html.
+
+In order to reset the styles of the host site, we include the namespaced reset stylesheet <a href="https://github.com/premasagar/cleanslate">cleanslate</a>.
+
+Next, we will namespace our existing stylesheets using the asset pipeline and scss. The cleanslate stylesheet sets all style properties with the !important tag, so we need to make sure that our custom stylesheets use the !improtant tag for their properties as well.
+A convenience routine that automatically adds !important to each style property has been added to the Gem.
+
+Instead of adding the stylesheet directly to your view, you can add it as link:
+
+  ```html
+    <%= bookmarklet_stylesheet_link_tag "mybookmarklet" %>
+  ```
+  
+Create a new file ```mybookmarklet.css.scss.erb``` in your stylesheets asset folder and the following lines (as an example, we will use <a href="https://github.com/anjlab/bootstrap-rails">twitter-bootstrap</a>):
+
+  ```css
+	@import 'cleanslate';
+	
+	.mybookmarklet {
+	  <%= RailsBookmarklet::important_stylesheet("bootstrap.css") %>
+	  <%= RailsBookmarklet::important_stylesheet("responsive.css") %>
+	  <%= RailsBookmarklet::important_stylesheet("mybookmarklet/style") %>
+	}
+	
+	<%= RailsBookmarklet::important_stylesheet("mybookmarklet/base") %>
+  ```
+  
+First, we include the cleanslate reset (which is namespaced by "cleanslate"). Second, we namespace twitter-bootstrap and our own style file by "mybookmarklet". We use the convenience method ```RailsBookmarklet::important_stylesheet``` to make all properties important. Finally, we include our base style (which should be used to style your outermost container).
+
+Your view's content container should then look as follows:
+
+  ```html
+	<div id="mybookmarklet_htmlcontent" class="cleanslate mybookmarklet mybookmarklet-base">
+		Hello World!
+	</div>
+  ```
