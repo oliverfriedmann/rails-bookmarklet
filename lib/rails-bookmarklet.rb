@@ -42,5 +42,9 @@ module RailsBookmarklet
       
       render 'bookmarklet/bookmarklet', :layout => false, :locals => {:namespace => namespace, :tags => tags}
     end
+    
+    def self.important_stylesheet(path)
+      return Rails.application.class.assets.find_asset(path).body.gsub(";", " !important;")
+    end
 
 end
