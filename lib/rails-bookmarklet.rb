@@ -47,6 +47,15 @@ module RailsBookmarklet
       return Rails.application.class.assets.find_asset(path).body.gsub(";", " !important;")
     end
     
+    def self.namespace_javascript(path, base, variable)
+      s =
+        "(function () {\n" +
+          Rails.application.class.assets.find_asset(path).body + "\n" +
+          base + "." + variable + " = " + variable + ";\n" +
+        "}).call(this);\n"
+      return s
+    end
+    
     def bookmarklet_stylesheet_link_tag(source, options = {})
       old = ActionController::Base.asset_host
       ActionController::Base.asset_host = request.host_with_port
