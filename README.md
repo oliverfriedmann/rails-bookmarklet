@@ -76,7 +76,7 @@ The ```render_bookmarklet(namespace, view, options = {})``` function takes the f
 An example view could look as follows:
 
   ```html
-  	<style id="bookmarklet_style">
+  	    <style id="bookmarklet_style">
 		.mybookmarklet_htmlbase {
 		  position: fixed;
 		  z-index: 2147483646;
@@ -106,7 +106,7 @@ An example view could look as follows:
 		}
 		</style>
 		
-		<div id="mybookmarklet_htmlbase" class="mybookmarklet_htmlbase" onclick="mybookmarklet_content_unload()">
+		<div id="mybookmarklet_htmlbase" class="mybookmarklet_htmlbase" onclick="mybookmarklet.base.content_unload()">
 		</div>
 		
 		<div id="mybookmarklet_htmlcontent" class="mybookmarklet_htmlcontent">
@@ -114,22 +114,24 @@ An example view could look as follows:
 		</div>
 		
 		<script language="JavaScript">
-			function mybookmarklet_content_unload() {
+			mybookmarklet.base = {};
+		
+			mybookmarklet.base.content_unload: function () {
 				document.body.removeChild(document.getElementById('mybookmarklet_htmlcontent'));
 				document.body.removeChild(document.getElementById('mybookmarklet_htmlbase'));
-				mybookmarklet_unload();
+				mybookmarklet.bookmarklet.unload();
 			}
 			
-			function mybookmarklet_content_load() {
+			mybookmarklet.base.content_load: function () {
 				document.body.appendChild(document.getElementById("mybookmarklet_htmlcontent"));
 				document.body.appendChild(document.getElementById("mybookmarklet_htmlbase"));
 			}
 			
-			function mybookmarklet_token() {
+			mybookmarklet.base.token: function () {
 				return '<%= @token %>';
 			}
 			
-			mybookmarklet_content_load();
+			mybookmarklet.base.content_load();
 		</script>
   ```
     
@@ -177,4 +179,23 @@ Your view's content container should then look as follows:
 	<div id="mybookmarklet_htmlcontent" class="cleanslate mybookmarklet mybookmarklet-base">
 		Hello World!
 	</div>
+  ```
+
+
+## JavaScripts
+
+You can either load javascript files like stylesheets by the convenience method ```bookmarklet_javascript_include_tag``` or load via your own code as follows:
+
+  ```javascript
+  	mybookmarklet.support.load_script("<%= bookmarklet_asset_url "mybookmarklet.js" %>", function() {
+  		alert("Yikes, the script has been loaded!");
+  	});
+  ```
+  
+As with the stylesheets, you need to make sure that your javascript code is namespaced. There is no automatic support included in this Gem to namespace javascript code (note that this is probably not even possible in general due to the halting problem etc.).
+You can namespace ```jQuery``` as follows:
+
+  ```javascript
+	//= require jquery
+	mybookmarklet.$ = jQuery.noConflict(true);
   ```
