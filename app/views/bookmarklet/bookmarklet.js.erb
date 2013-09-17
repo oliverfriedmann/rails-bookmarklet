@@ -1,0 +1,54 @@
+<%= namespace %> = {
+	bookmarklet: {
+		set_content: function (container) {
+			<% tags.each do |tag| %>
+				var elem = document.createElement('<%= tag[:name] %>');
+				<% tag[:attributes].each do |key,value| %>
+					elem.setAttribute("<%= key %>", "<%= value %>");
+				<% end %>
+				elem.innerHTML = '<%= j raw(tag[:innerHTML]) %>';
+				container.appendChild(elem);
+			<% end %>
+		},
+		
+		is_loaded: function () {
+			return document.getElementById("<%= namespace %>_container") != null;
+		},
+	
+		load: function () {
+			if (!this.is_loaded()) {
+				var container = document.createElement("div");
+				container.setAttribute('id', '<%= namespace %>_container');
+				container.style.display = 'none';
+				this.set_content(container);
+				document.body.appendChild(container);
+			}
+		},
+		
+		unload: function () {
+			if (this.is_loaded())
+				document.body.removeChild(document.getElementById("<%= namespace %>_container"));
+		}
+	},
+	
+	support: {
+		load_script: function (url, cb) {
+			var executed = false;
+			var head = document.getElementsByTagName("head")[0];
+			var script = document.createElement("script");
+			script.src = url;
+			script.onload = script.onreadystatechange = function() {
+				if (!executed && (!this.readyState || this.readyState == "loaded" || this.readyState == "complete")) {
+					executed = true;
+					script.onload = script.onreadystatechange = null;
+					cb();
+					head.removeChild(script);
+				}
+			};
+			head.appendChild(script);
+		}
+	}
+
+};
+
+<%= namespace %>.bookmarklet.load();

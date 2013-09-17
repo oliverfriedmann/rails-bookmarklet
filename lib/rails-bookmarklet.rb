@@ -39,8 +39,9 @@ module RailsBookmarklet
           });
         end
       end
-      
-      render 'bookmarklet/bookmarklet', :layout => false, :locals => {:namespace => namespace, :tags => tags}
+
+      options = { :formats => ['js'], :layout => false, :locals => {:namespace => namespace, :tags => tags} }
+      render 'bookmarklet/bookmarklet', options
     end
     
     def self.important_stylesheet(path)
