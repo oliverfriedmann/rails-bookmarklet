@@ -14,6 +14,7 @@ Gem::Specification.new do |s|
   s.description = "A bookmarklet gem for rails."
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
+  s.test_files = Dir["test/**/*"]
 
   s.require_paths = ["lib"]
 
