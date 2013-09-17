@@ -58,7 +58,7 @@ module RailsBookmarklet
     
     def bookmarklet_stylesheet_link_tag(source, options = {})
       old = ActionController::Base.asset_host
-      ActionController::Base.asset_host = request.host_with_port
+      ActionController::Base.asset_host = request.protocol + request.host_with_port
       s = stylesheet_link_tag(source, options)
       ActionController::Base.asset_host = old
       return s
@@ -70,7 +70,7 @@ module RailsBookmarklet
 
     def bookmarklet_javascript_include_tag(source, options = {})
       old = ActionController::Base.asset_host
-      ActionController::Base.asset_host = request.host_with_port
+      ActionController::Base.asset_host = request.protocol + request.host_with_port
       s = javascript_include_tag(source, options)
       ActionController::Base.asset_host = old
       return s
