@@ -116,18 +116,18 @@ An example view could look as follows:
 		<script language="JavaScript">
 			mybookmarklet.base = {};
 		
-			mybookmarklet.base.content_unload: function () {
+			mybookmarklet.base.content_unload = function () {
 				document.body.removeChild(document.getElementById('mybookmarklet_htmlcontent'));
 				document.body.removeChild(document.getElementById('mybookmarklet_htmlbase'));
 				mybookmarklet.bookmarklet.unload();
 			}
 			
-			mybookmarklet.base.content_load: function () {
+			mybookmarklet.base.content_load = function () {
 				document.body.appendChild(document.getElementById("mybookmarklet_htmlcontent"));
 				document.body.appendChild(document.getElementById("mybookmarklet_htmlbase"));
 			}
 			
-			mybookmarklet.base.token: function () {
+			mybookmarklet.base.token = function () {
 				return '<%= @token %>';
 			}
 			
